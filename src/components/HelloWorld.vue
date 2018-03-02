@@ -5,10 +5,10 @@
         <div class="monster-hp">
           <span class="monster-hp-bar" :style="{ width: monster.life + '%', backgroundColor: lifeColor }"></span>
         </div>
-        <img :src="monsterImage(monster)" alt="" class="monster-image" :style="{ opacity: monsterAlive(monster) }">
+        <img :src="monsterImage(monster)" alt="" class="monster-image" :class="{ damage: damaged[monster.id] }" :style="{ opacity: monsterAlive(monster) }">
         <div class="monster-name">{{monster.name}}</div>
-        <button class="attack" @click="heal(monster)">いいね</button>
-        <button class="attack" @click="attack(monster)">きらい</button>
+        <button class="attack" @click="attack(monster)">攻撃</button>
+        <button class="attack" @click="heal(monster)">回復</button>
       </div>
     </div>
     <i class="material-icons bgm" @click="toggleBgm()">volume_{{isBgmPlay ? 'up' : 'off'}}</i>
@@ -16,14 +16,19 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
 import * as firebase from 'firebase'
 
 export default {
   data () {
     return {
-      isBgmPlay: true,
+      isBgmPlay: false,
       monsters: [],
-      bgm: new Audio(require('../assets/bgm.mp3'))
+      damaged: {},
+      bgm: new Audio(require('../assets/bgm.mp3')),
+      likeSound: new Audio(require('../assets/like.mp3')),
+      disLikeSound: new Audio(require('../assets/dislike.mp3'))
     }
   },
 
@@ -38,8 +43,22 @@ export default {
       this.monsters = data
     })
 
-    this.bgm.volume = 0.03
-    this.bgm.play()
+    this.bgm.loop = true
+    this.bgm.volume = 0.3
+  },
+
+  watch: {
+    monsters: function (newValue, old) {
+      if (old[0]) {
+        newValue.forEach((element, index) => {
+          if (element.life > old[index].life) {
+            this.healEffect()
+          } else if (element.life < old[index].life) {
+            this.damageEffect(element)
+          }
+        })
+      }
+    }
   },
 
   methods: {
@@ -50,6 +69,7 @@ export default {
     toggleBgm: function () {
       if (this.bgm.paused) {
         this.bgm.play()
+        this.isBgmPlay = true
       } else {
         this.bgm.pause()
         this.isBgmPlay = false
@@ -92,6 +112,23 @@ export default {
       })
     },
 
+    healEffect: function () {
+      this.likeSound.pause()
+      this.likeSound = new Audio(require('../assets/like.mp3'))
+      this.likeSound.play()
+    },
+
+    damageEffect: function (monster) {
+      this.disLikeSound.pause()
+      this.disLikeSound = new Audio(require('../assets/dislike.mp3'))
+      this.disLikeSound.play()
+
+      Vue.set(this.damaged, monster.id, true)
+      setTimeout(() => {
+        Vue.set(this.damaged, monster.id, false)
+      }, 820)
+    },
+
     monsterAlive: function (monster) {
       if (monster.life === 0) {
         return 0.3
@@ -119,7 +156,7 @@ export default {
     width: 200px;
     height: 200px;
     border: 10px solid #fff;
-    box-shadow: 0 0 6px #000;
+    box-shadow: 0 0 35px #fff;
     transition: 1s;
   }
   .monster-name {
@@ -170,5 +207,30 @@ export default {
     bottom: 30px;
     left: 30px;
     cursor: pointer;
+  }
+
+  .damage {
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  @keyframes shake {
+    10%, 90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+      transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+      transform: translate3d(4px, 0, 0);
+    }
   }
 </style>
