@@ -3,13 +3,15 @@
     <div class="monsters">
       <div class="monster" v-for="monster in monsters" :key="monster.id">
         <div class="monster-hp">
-          <span class="monster-hp-bar" :style="{ width: monster.life + '%', backgroundColor: lifeColor }"></span>
+          <span class="monster-hp-bar" :style="{ width: monster.life + '%', backgroundColor: lifeColor(monster) }"></span>
         </div>
         <img :src="monsterImage(monster)" alt="" class="monster-image" :class="{ damage: damaged[monster.id] }" :style="{ opacity: monsterAlive(monster) }">
         <div class="monster-name">{{monster.name}}</div>
         <button class="attack" @click="attack(monster)">攻撃</button>
+        <button class="attack" @click="largeAttack(monster)">大攻撃</button>
         <button class="attack" @click="heal(monster)">回復</button>
         <button class="attack" @click="guard(monster)">防御</button>
+        <button class="attack" @click="largeHeal(monster)">大回復</button>
       </div>
     </div>
     <i class="material-icons bgm" @click="toggleBgm()">volume_{{isBgmPlay ? 'up' : 'off'}}</i>
@@ -80,7 +82,7 @@ export default {
     },
 
     lifeColor: function (monster) {
-      if (monster < 40) {
+      if (monster.life < 40) {
         return 'red'
       } else {
         return 'green'
@@ -118,6 +120,20 @@ export default {
       })
     },
 
+    largeAttack: function (monster) {
+      let life = monster.life
+
+      if (monster.life < 10) {
+        life = 0
+      } else {
+        life -= 100
+      }
+
+      firebase.database().ref(`monsters/${monster.key}`).update({
+        life: life
+      })
+    },
+
     heal: function (monster) {
       let life = monster.life
 
@@ -132,6 +148,19 @@ export default {
       })
     },
 
+    largeHeal: function (monster) {
+      let life = monster.life
+
+      if (life > 90) {
+        life = 100
+      } else {
+        life += 100
+      }
+
+      firebase.database().ref(`monsters/${monster.key}`).update({
+        life: life
+      })
+    },
     healEffect: function () {
       this.likeSound.pause()
       this.likeSound = new Audio(require('../assets/like.mp3'))
