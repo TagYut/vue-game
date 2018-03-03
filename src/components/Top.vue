@@ -88,7 +88,7 @@ export default {
     },
 
     guard: function (monster) {
-      if (this.guard = false) {
+      if (this.guard) {
           this.guard = false
           console.log(this.guard)
         } else {
@@ -100,7 +100,7 @@ export default {
     attack: function (monster) {
       let life = monster.life
 
-      if(this.guard = false) {
+      if(this.guard === false) {
         if (monster.life < 10) {
         life = 0
       } else {
