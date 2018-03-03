@@ -100,12 +100,17 @@ export default {
     attack: function (monster) {
       let life = monster.life
 
-      if(this.guard === false) {
+      if(this.guard) {
         if (monster.life < 10) {
         life = 0
       } else {
         life -= 10
       }} else{
+        if (monster.life < 10) {
+        life = 0
+      } else {
+        life -= 1
+      }
         this.guard = false
       }
 
