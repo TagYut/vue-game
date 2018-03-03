@@ -106,11 +106,6 @@ export default {
       } else {
         life -= 10
       }} else{
-        if (monster.life < 10) {
-        life = 0
-      } else {
-        life -= 1
-      }
         this.guard = false
       }
 
