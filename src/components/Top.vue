@@ -9,6 +9,7 @@
         <div class="monster-name">{{monster.name}}</div>
         <button class="attack" @click="attack(monster)">攻撃</button>
         <button class="attack" @click="heal(monster)">回復</button>
+        <button class="attack" @click="guard(monster)">防御</button>
       </div>
     </div>
     <i class="material-icons bgm" @click="toggleBgm()">volume_{{isBgmPlay ? 'up' : 'off'}}</i>
@@ -23,6 +24,7 @@ export default {
   data () {
     return {
       isBgmPlay: false,
+      guard: false,
       monsters: [],
       damaged: {},
       bgm: new Audio(require('../assets/bgm.mp3')),
@@ -85,13 +87,26 @@ export default {
       }
     },
 
+    guard: function (monster) {
+      if (this.guard = false) {
+          this.guard = false
+          console.log(this.guard)
+        } else {
+          this.guard = true
+          console.log(this.guard)
+       }
+    },
+
     attack: function (monster) {
       let life = monster.life
 
-      if (monster.life < 10) {
+      if(this.guard = false) {
+        if (monster.life < 10) {
         life = 0
       } else {
         life -= 10
+      }} else{
+        this.guard = false
       }
 
       firebase.database().ref(`monsters/${monster.key}`).update({
