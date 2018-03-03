@@ -3,7 +3,7 @@
     <div class="monsters">
       <div class="monster" v-for="monster in monsters" :key="monster.id">
         <div class="monster-hp">
-          <span class="monster-hp-bar" :style="{ width: monster.life + '%', backgroundColor: lifeColor }"></span>
+          <span class="monster-hp-bar" :style="{ width: monster.life + '%', backgroundColor: lifeColor(monster) }"></span>
         </div>
         <img :src="monsterImage(monster)" alt="" class="monster-image" :class="{ damage: damaged[monster.id] }" :style="{ opacity: monsterAlive(monster) }">
         <div class="monster-name">{{monster.name}}</div>
@@ -77,6 +77,7 @@ export default {
       }
     },
 
+    // TODO: check
     lifeColor: function (monster) {
       if (monster < 40) {
         return 'red'
