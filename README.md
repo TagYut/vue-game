@@ -2,6 +2,22 @@
 
 > A Vue.js project
 
+## ステップ
+
+1. このリポジトリをフォーク
+2. フォークしたリポジトリをclone
+
+```
+git clone  <フォークしたリポジトリのURL>
+cd vue-game
+npm i
+npm run dev
+```
+
+3. 作業
+4. commit & push
+5. Pull Request
+
 ## Build Setup
 
 ``` bash
