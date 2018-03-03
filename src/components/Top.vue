@@ -24,7 +24,7 @@ export default {
   data () {
     return {
       isBgmPlay: false,
-      guard: false,
+      isguard: false,
       monsters: [],
       damaged: {},
       bgm: new Audio(require('../assets/bgm.mp3')),
@@ -88,25 +88,29 @@ export default {
     },
 
     guard: function (monster) {
-      if (this.guard) {
-          this.guard = false
-          console.log(this.guard)
+      if (this.isguard) {
+          this.isguard = false
+          console.log(this.isguard)
         } else {
-          this.guard = true
-          console.log(this.guard)
+          this.isguard = true
+          console.log(this.isguard)
        }
     },
 
     attack: function (monster) {
       let life = monster.life
 
-      if(this.guard) {
+      if(this.isguard) {
         if (monster.life < 10) {
         life = 0
       } else {
         life -= 10
       }} else{
-        this.guard = false
+        if (monster.life < 10) {
+        life = 0
+      } else {
+        life -= 1}
+        this.isguard = false
       }
 
       firebase.database().ref(`monsters/${monster.key}`).update({
