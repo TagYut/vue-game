@@ -77,9 +77,8 @@ export default {
       }
     },
 
-    // TODO: check
     lifeColor: function (monster) {
-      if (monster < 40) {
+      if (monster.life < 40) {
         return 'red'
       } else {
         return 'green'
